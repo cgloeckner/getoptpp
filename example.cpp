@@ -5,7 +5,7 @@
 int main(int argc, char* argv[]) {
 	int verbose_flag;
 	
-	gopt::Options opt;
+	dg::Options opt;
 	opt.add("verbose", no_argument, &verbose_flag, 1, [&]() {
 		std::cout << "verbose: " << verbose_flag << "\n";
 	});

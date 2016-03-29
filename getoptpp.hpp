@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <getopt.h>
 
-namespace gopt {
+namespace dg {
 
 using Handle = std::function<void()>;
 
