@@ -13,7 +13,17 @@ class Options {
 	public:
 		Options();
 		
+		/// @param name		name of the option
+		/// @param has_arg	kind of arguments that are used (no_argument, required_argument, optional_argument)
+		/// @param val		identifies the option (see getopt documentation)
+		/// @param handle	lambda that is invoked when the option occures
 		void add(std::string const & name, int has_arg, int val, Handle handle);
+	
+		/// @param name		name of the option
+		/// @param has_arg	kind of arguments that are used (no_argument, required_argument, optional_argument)
+		/// @param flag		optional pointer that is set after the option occured
+		/// @param val		value for the flag to be set
+		/// @param handle	lambda that is invoked when the option occures
 		void add(std::string const & name, int has_arg, int* flag, int val, Handle handle);
 		
 		void process(int argc, char* argv[]);
@@ -35,6 +45,7 @@ void Options::add(std::string const & name, int has_arg, int val, Handle handle)
 }
 
 void Options::add(std::string const & name, int has_arg, int* flag, int val, Handle handle) {
+	// create a new option from the args
 	options.emplace_back();
 	auto& option = options.back();
 	option.name = name.c_str();
@@ -42,10 +53,13 @@ void Options::add(std::string const & name, int has_arg, int* flag, int val, Han
 	option.flag = flag;
 	option.val = val;
 	
-	int index = val;
+	int index = val; // let val be the option's unique identifier
 	if (flag != nullptr) {
+		// flag is not null, so the val is not used as identifier
+		// so pick another one
 		index = num_flags++;
 	}
+	// store the handle
 	handles[index] = handle;
 }
 
