@@ -21,7 +21,7 @@ class Options {
 	
 		/// @param name		name of the option
 		/// @param has_arg	kind of arguments that are used (no_argument, required_argument, optional_argument)
-		/// @param flag		optional pointer that is set after the option occured
+		/// @param flag		pointer that is set after the option occured
 		/// @param val		value for the flag to be set
 		/// @param handle	lambda that is invoked when the option occures
 		void add(std::string const & name, int has_arg, int* flag, int val, Handle handle);
