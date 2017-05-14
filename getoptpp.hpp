@@ -49,8 +49,10 @@ void Options::add(std::string const & name, int has_arg, int val, Handle handle)
 }
 
 void Options::add(std::string const & name, int has_arg, int* flag, int val, Handle handle) {
-	int index = val; // let val be the option's unique identifier
+	// create a new option from the args
 	options.push_back({name.data(), has_arg, flag, val});
+	
+	int index = val; // let val be the option's unique identifier
 	if (flag != nullptr) {
 		// flag is not null, so the val is not used as identifier
 		// so pick another one
