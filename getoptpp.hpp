@@ -9,7 +9,7 @@
 
 namespace dg {
 
-using Handle = std::function<void()>;
+using Handle = std::function<int()>;
 
 class Options {
 	public:
@@ -40,7 +40,8 @@ class Options {
 			handles[index] = handle;
 		}
 
-		bool process(int argc, char* argv[]) {
+		int process(int argc, char* argv[]) {
+			int ret = 0;
 			std::string shortopts;
 			for (auto const & option: options) {
 				if (option.flag != nullptr) {
@@ -71,17 +72,22 @@ class Options {
 				if (key == -1) {
 					break;
 				} else if (key == '?') {
-					return false;
+					return 1;
 				} else if (key == ':') {
-					return false;
+					return 1;
 				} else if (key == 0) {
 					// call flag's handle
-					handles.at(index)();
+					ret = handles.at(index)();
 				} else {
 					// call option's handle
-					handles.at(key)();
+					ret = handles.at(key)();
 				}
 			}
+
+			if(ret) {
+				return ret;
+			}
+
 			for (int i = optind; i < argc; ++i) {
 				args.push_back(argv[i]);
 			}
@@ -89,7 +95,7 @@ class Options {
 			// remove terminating option
 			options.pop_back();
 			assert(options.size() == handles.size());
-			return true;
+			return 0;
 		}
 
 		const std::vector<std::string> arguments() const { return args; }
