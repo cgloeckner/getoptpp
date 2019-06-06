@@ -3,6 +3,7 @@
 #include <cassert>
 #include <functional>
 #include <vector>
+#include <deque>
 #include <unordered_map>
 #include <string>
 #include <cstring>
@@ -30,8 +31,9 @@ class Options {
 		/// @param help_text	help text for this option
 		/// @param handle	lambda that is invoked when the option occures
 		void add(std::string const & name, int has_arg, int* flag, int val, std::string const & help_text, Handle handle) {
+			names.push_back(name);
 			// create a new option from the args
-			options.push_back({name.data(), has_arg, flag, val});
+			options.push_back({names.back().data(), has_arg, flag, val});
 			help_texts.push_back(help_text);
 
 			int index = val; // let val be the option's unique identifier
@@ -86,10 +88,10 @@ class Options {
 					// call option's handle
 					ret = handles.at(key)();
 				}
-			}
 
-			if(ret) {
-				return ret;
+				if(ret) {
+					return ret;
+				}
 			}
 
 			for (int i = optind; i < argc; ++i) {
@@ -117,6 +119,9 @@ class Options {
 
 			int index = 0;
 			for(auto const & help_text : help_texts) {
+				if(index >= (int)options.size()) {
+					break;
+				}
 				auto const & opt = options.at(index);
 				std::string args;
 				switch(opt.has_arg) {
@@ -151,6 +156,7 @@ class Options {
 	private:
 		std::size_t num_flags{};
 		std::vector<option> options{};
+		std::deque<std::string> names{};
 		std::vector<std::string> help_texts{};
 		std::vector<std::string> args;
 		std::unordered_map<int, Handle> handles{};
